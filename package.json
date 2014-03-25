@@ -1,0 +1,9 @@
+{
+  "name": "simplewebrtc-demo",
+  "version": "0.0.0",
+  "dependencies": {
+    "express": "3.x",
+    "webrtc.io": "*",
+    "webrtc.io-client": "git://github.com/webRTC/webrtc.io-client.git"
+  }
+}

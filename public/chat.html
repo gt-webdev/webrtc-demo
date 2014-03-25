@@ -1,0 +1,78 @@
+<html>
+  <head>
+    <script src="http://cdn.peerjs.com/0.3/peer.js"></script>
+    <link rel="StyleSheet" href="styles.css"></link>
+  </head>
+  <body>
+    <h1>Chat Example</h1>
+    <h3>your id is <span id="chat-id">[Initializing...]</span></h3>
+
+
+    <input type="text" placeholder="enter another user's id" id="peer-id-box"></input>
+    <button id="connect-btn">Send</button>
+
+    <input type="text" placeholder="type message here" id="message-text-box"></input>
+    <button id="send-btn">Send</button>
+
+    <div id="messages-list">
+    </div>
+
+    <script>
+      //my application key retrieved from http://peerjs.com
+      var peer = new Peer({ key: '9zhxi3dhbz0vn29'});
+      var conn = null;
+
+      var conn_btn = document.getElementById('connect-btn');
+      var send_btn = document.getElementById('send-btn');
+      var peer_id_box = document.getElementById('peer-id-box');
+      var message_text_box = document.getElementById('message-text-box');
+      var messages_list = document.getElementById('messages-list');
+
+      peer.on('open', function(id) {
+        console.log(id);
+        //show the user what's his client id
+        document.getElementById('chat-id').innerText = id;
+      });
+
+      conn_btn.onclick = function(e) {
+        if (peer_id_box.value !== "") {
+          //connect to the peer
+          conn = peer.connect(peer_id_box.value);
+          //set up a chat room between the two connections
+          setUpChatConn(conn);
+          //disables the connection button from doing anything
+          conn_btn.onclick = null;
+        }
+      };
+      
+
+      var setUpChatConn = function(conn) {
+        console.log(conn);
+        debugger;
+        //handle incoming data event (i.e. the peer sent me a message)
+        conn.on('data', function(data) {
+          var new_message = document.createElement("div");
+          new_message.innerHTML = '<span class="other-user-name">' + conn.peer + ': </span>' + data;
+          messages_list.appendChild(new_message);
+          messages_list.scrollTop = messages_list.scrollHeight;
+        });
+
+        send_btn.onclick = function(e) {
+          var send_message = message_text_box.value;
+          message_text_box.value = "";
+          message_text_box.focus();
+          conn.send(send_message);
+          var new_message = document.createElement("div");
+          new_message.innerHTML = '<span class="my-user-name">me: </span>' + send_message;
+          messages_list.appendChild(new_message);
+          messages_list.scrollTop = messages_list.scrollHeight;
+        };
+      };
+
+      peer.on('connection', function(conn) {
+        peer_id_box.value = conn.peer;
+        setUpChatConn(conn);
+      });
+    </script>
+  </body>
+</html>

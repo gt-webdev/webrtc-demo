@@ -1,0 +1,17 @@
+#messages-list {
+  height: 500px;
+  border: 1px solid black;
+  overflow-y: scroll;
+}
+
+.other-user-name {
+  color: red;
+  font-size: 13pt;
+  font-weight: bold;
+}
+
+.my-user-name {
+  color: green;
+  font-size: 13pt;
+  font-weight: bold;
+}
